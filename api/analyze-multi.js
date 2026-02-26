@@ -6,17 +6,27 @@ export const config = {
 
 export default async function handler(req, res) {
 
-  // 🔐 בדיקת מפתח סודי
+  // ===== CORS =====
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-secret-key");
+
+  // טיפול ב-Preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // בדיקת מפתח סודי
   if (req.headers["x-secret-key"] !== process.env.SECRET_KEY) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // ❌ חסימת מתודות אחרות
+  // בדיקת מתודה
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  // ✅ תגובת בדיקה ראשונית (לבדיקה שהחיבור עובד)
+  // כרגע מחזיר סימולציה
   return res.status(200).json({
     material_name: "Tri Zinc Citrate Dihydrate",
     manufacturer: "Gadot Biochemical Industries",
