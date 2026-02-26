@@ -6,6 +6,7 @@ export const config = {
 
 export default async function handler(req, res) {
 
+  // ===== CORS =====
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const form = formidable();
 
     const { fields } = await new Promise((resolve, reject) => {
@@ -28,16 +30,20 @@ export default async function handler(req, res) {
       });
     });
 
-    const clientKey = fields.secret_key;
+    // 🔐 תיקון קריטי: טיפול במקרה שהשדה מגיע כ-Array
+    const rawKey = fields.secret_key;
+    const clientKey = Array.isArray(rawKey) ? rawKey[0] : rawKey;
 
     if (!clientKey || clientKey !== process.env.SECRET_KEY) {
       return res.status(401).json({
         error: "Unauthorized",
         received: clientKey || "No key received",
+        expected: process.env.SECRET_KEY,
         serverHasKey: process.env.SECRET_KEY ? "YES" : "NO"
       });
     }
 
+    // ===== סימולציה רגולטורית =====
     return res.status(200).json({
       material_name: "Tri Zinc Citrate Dihydrate",
       manufacturer: "Gadot Biochemical Industries",
