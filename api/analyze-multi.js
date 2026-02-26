@@ -6,7 +6,6 @@ export const config = {
 
 export default async function handler(req, res) {
 
-  // ===== CORS =====
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -39,7 +38,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // סימולציה רגולטורית
     return res.status(200).json({
       material_name: "Tri Zinc Citrate Dihydrate",
       manufacturer: "Gadot Biochemical Industries",
