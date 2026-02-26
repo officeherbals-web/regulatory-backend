@@ -17,8 +17,15 @@ export default async function handler(req, res) {
   }
 
   // בדיקת מפתח סודי
-  if (req.headers["x-secret-key"] !== process.env.SECRET_KEY) {
-    return res.status(401).json({ error: "Unauthorized" });
+ const clientKey = req.headers["x-secret-key"];
+
+if (!clientKey || clientKey !== process.env.SECRET_KEY) {
+  return res.status(401).json({
+    error: "Unauthorized",
+    received: clientKey || "No key received",
+    serverHasKey: process.env.SECRET_KEY ? "YES" : "NO"
+  });
+}
   }
 
   // בדיקת מתודה
